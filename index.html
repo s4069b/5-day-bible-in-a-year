@@ -120,7 +120,7 @@
 <section class="section" id="google"><div class="wrap"><h2>Import into a new Google Calendar</h2><div class="card"><div class="mini-illustration"><svg viewBox="0 0 100 80" role="img" aria-label="Illustration of a calendar in a browser"><rect x="8" y="8" width="84" height="64" rx="6" fill="#fff" stroke="#8ba9c9" stroke-width="2"/><path d="M8 25h84" stroke="#8ba9c9" stroke-width="2"/><circle cx="18" cy="17" r="2" fill="#3977b8"/><circle cx="25" cy="17" r="2" fill="#3977b8"/><path d="M22 36h12v10H22zM43 36h12v10H43zM64 36h12v10H64zM22 52h12v10H22zM43 52h12v10H43z" fill="#e6eff9" stroke="#245b91" stroke-width="1.5"/></svg><p><strong>Create the destination first.</strong><br>Google Calendar imports events into a calendar you select; it doesn't automatically create a separate calendar from the .ics file.</p></div><ol><li>Open <a href="https://calendar.google.com/" target="_blank" rel="noopener">Google Calendar</a> in a computer browser.</li><li>Beside <strong>Other calendars</strong>, click <strong>+</strong> and choose <strong>Create new calendar</strong>. Name it (for example, “Bible Reading 2028 ESV”) and click <strong>Create calendar</strong>.</li><li>Open Settings (gear icon) → <strong>Import &amp; export</strong>.</li><li>Under Import, select the downloaded <code>.ics</code> file and choose the new calendar as the destination.</li><li>Click <strong>Import</strong>. Check the calendar list to make sure the events appear in the new calendar.</li></ol><p class="tip">Google's .ics import is done on a computer, not in the mobile app. Imported events do not automatically sync with the source file.</p><p><a href="https://support.google.com/calendar/answer/37118" target="_blank" rel="noopener">Google's official import instructions ↗</a></p></div></div></section>
 <section class="section" id="outlook"><div class="wrap"><h2>Import into a new Outlook Calendar</h2><div class="card"><div class="mini-illustration"><svg viewBox="0 0 100 80" role="img" aria-label="Illustration of a calendar page and checkmark"><rect x="12" y="8" width="57" height="62" rx="5" fill="#fff" stroke="#8ba9c9" stroke-width="2"/><path d="M12 24h57M25 4v9M56 4v9" stroke="#245b91" stroke-width="2.5" stroke-linecap="round"/><path d="M23 34h8M39 34h8M23 45h8M39 45h8" stroke="#3977b8" stroke-width="3" stroke-linecap="round"/><circle cx="74" cy="53" r="18" fill="#e6eff9" stroke="#245b91" stroke-width="2"/><path d="m65 53 6 6 12-13" fill="none" stroke="#245b91" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg><p><strong>Make a blank calendar first.</strong><br>Outlook's web import flow lets you choose a destination calendar.</p></div><ol><li>Open <a href="https://outlook.live.com/calendar/" target="_blank" rel="noopener">Outlook Calendar</a>.</li><li>Select <strong>Add calendar → Create blank calendar</strong>. Name it and save.</li><li>Select <strong>Add calendar → Upload from file</strong>.</li><li>Browse to the downloaded <code>.ics</code> file, then select the new calendar in the destination dropdown.</li><li>Click <strong>Import</strong>.</li></ol><p class="tip">In classic Outlook for Windows, the import wizard may offer <strong>Open as New</strong>. Menu names differ between classic Outlook, new Outlook and Outlook on the web.</p><p><a href="https://support.microsoft.com/en-us/outlook/import-or-subscribe-to-a-calendar-in-outlook-com-or-outlook-on-the-web" target="_blank" rel="noopener">Microsoft's official import instructions ↗</a></p></div></div></section>
 </main>
-<footer class="source-note"><div class="wrap"><p>Would you like to host your own copy of this Bible Reading Plan page? <a href="./index.html" download="Bible Reading Plan.html">Download the HTML file</a> and upload it to your own website or web hosting.</p></div></footer>
+<footer class="source-note"><div class="wrap"><p>Would you like to host your own copy of this Bible Reading Plan page? <a href="#" id="sourceDownload" download="Bible Reading Plan.html">Download the HTML file</a> and upload it to your own website or web hosting.</p></div></footer>
 
 <script>
 (()=>{
@@ -156,10 +156,27 @@ function makeCalendar(year,version,cutoffDate){
   events.push(['BEGIN:VEVENT',`UID:${uid}`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d3/,'')}`,`DTSTART;VALUE=DATE:${date}`,`DTEND;VALUE=DATE:${dateEnd}`,`SUMMARY:${escapeICS(`${ref} - W${week}D${day}`)}`,`DESCRIPTION:${escapeICS(ref+"\n"+passageUrl)}`,`URL:${passageUrl}`,'END:VEVENT'].join('\r\n'));
  }
  const label=version?versionSelect.options[versionSelect.selectedIndex].textContent:'No version';
- return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//OpenAI//Five Day Bible Reading Calendar//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH',`X-WR-CALNAME:${escapeICS('Bible Reading Plan')}`,'X-WR-TIMEZONE:Australia/Brisbane',...events,'END:VCALENDAR',''].join('\r\n');
+ return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ReadingPlan//Five Day Bible Reading Calendar//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH',`X-WR-CALNAME:${escapeICS('Bible Reading Plan')}`,'X-WR-TIMEZONE:Australia/Brisbane',...events,'END:VCALENDAR',''].join('\r\n');
 }
 function update(){const year=Number(yearSelect.value);const isCurrentYear=year===currentYear;abridgeOption.hidden=!isCurrentYear;const abridge=isCurrentYear&&abridgeCheck.checked;dateOption.hidden=!abridge;abridgeHelp.hidden=!abridge;const cutoffDate=abridge?startDate.value:null;const version=noVersionCheck.checked?'':versionSelect.value;versionSelect.disabled=noVersionCheck.checked;const file='Bible Reading Plan.ics';filename.textContent=`${file} — generated when you download`;link.textContent=`Generate and download ${year} — ${version?versionSelect.options[versionSelect.selectedIndex].textContent:'No version'}${cutoffDate?' — from '+new Date(`${cutoffDate}T00:00:00`).toLocaleDateString(undefined,{day:'numeric',month:'short'}):''}`;link.href='#download';link.onclick=(e)=>{e.preventDefault();const content=makeCalendar(year,version,cutoffDate);const blob=new Blob([content],{type:'text/calendar;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=file;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);};}
 yearSelect.value=String(currentYear);versionSelect.value='ESV';yearSelect.addEventListener('change',update);versionSelect.addEventListener('change',update);noVersionCheck.addEventListener('change',update);abridgeCheck.addEventListener('change',update);startDate.addEventListener('change',update);update();
 })();
+</script>
+<script>
+// Save a standalone copy, excluding scripts added by the hosting service.
+document.getElementById('sourceDownload').addEventListener('click', function(event) {
+  event.preventDefault();
+  const copy = document.documentElement.cloneNode(true);
+  copy.querySelectorAll('script[src], [data-cf-beacon]').forEach(element => element.remove());
+  const html = '<!doctype html>\n' + copy.outerHTML;
+  const url = URL.createObjectURL(new Blob([html], {type:'text/html;charset=utf-8'}));
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = 'Bible Reading Plan.html';
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
 </script>
 </body></html>
