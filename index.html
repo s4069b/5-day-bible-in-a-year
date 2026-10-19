@@ -14,7 +14,7 @@
 <header class="hero"><div class="wrap">
 <div class="eyebrow">A simple way to keep reading</div>
 <h1>Five Day Bible in a Year — Calendar Downloads</h1>
-<p class="lede">Turn the Five Day Bible Reading Plan into a calendar you can import into Apple Calendar, Google Calendar or Outlook. Choose a year and Bible translation to generate an iCal calendar with links to each day’s readings.</p>
+<p class="lede">This site turns the Five Day Bible Reading Plan into a calendar you can import into Apple Calendar, Google Calendar or Outlook. Choose a year and Bible translation to generate an iCal calendar with links to each day’s readings.</p>
 <div class="hero-art"><span class="pill">52 weeks of readings</span><span class="pill">Five readings per week</span><span class="pill">Passage links included</span></div>
 <div class="instruction-cards" aria-label="How to use your Bible reading calendar">
   <article class="instruction-card">
@@ -144,9 +144,8 @@ function makeCalendar(year,version){
   const versionText=version?` in ${versionSelect.options[versionSelect.selectedIndex].textContent}`:'';
   const search=encodeURIComponent(ref).replace(/%20/g,'%20');
   const passageUrl=`https://www.biblegateway.com/passage/?search=${search}${version?'&version='+encodeURIComponent(version):''}`;
-  const desc=`${ref}. Read${versionText} on Bible Gateway: ${passageUrl}`;
   const uid=`bible-reading-${year}-w${week}d${day}@five-day-bible-reading`;
-  events.push(['BEGIN:VEVENT',`UID:${uid}`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d3/,'')}`,`DTSTART;VALUE=DATE:${date}`,`DTEND;VALUE=DATE:${dateEnd}`,`SUMMARY:Bible Reading - W${week}D${day}`,`DESCRIPTION:${escapeICS(desc)}`,'END:VEVENT'].join('\r\n'));
+  events.push(['BEGIN:VEVENT',`UID:${uid}`,`DTSTAMP:${new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d3/,'')}`,`DTSTART;VALUE=DATE:${date}`,`DTEND;VALUE=DATE:${dateEnd}`,`SUMMARY:Bible Reading - W${week}D${day}`,`DESCRIPTION:${escapeICS(ref)}`,`URL:${passageUrl}`,'END:VEVENT'].join('\r\n'));
  }
  const label=version?versionSelect.options[versionSelect.selectedIndex].textContent:'No version';
  return ['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//OpenAI//Five Day Bible Reading Calendar//EN','CALSCALE:GREGORIAN','METHOD:PUBLISH',`X-WR-CALNAME:${escapeICS(`Bible Reading ${year} ${label}`)}`,'X-WR-TIMEZONE:Australia/Brisbane',...events,'END:VCALENDAR',''].join('\r\n');
